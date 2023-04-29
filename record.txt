@@ -1,0 +1,1 @@
+Stopped at index $7007. Try again after $55460 seconds.

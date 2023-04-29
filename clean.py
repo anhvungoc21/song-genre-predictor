@@ -56,15 +56,16 @@ for idx, row in df.iterrows():
                                  headers=track_headers)
 
         if (track_res.status_code != 200):
-            ## Save csv upon error
-            df.to_csv(f'dataset_clean_${time.time()}.csv', sep='\t', encoding='utf-8')
+            # Save csv upon error
+            df.to_csv(f'dataset_clean_${time.time()}.csv',
+                      sep='\t', encoding='utf-8')
 
-            ## Save index failed at and retry time
-            record_msg = f"Stopped at index ${idx}. Try again after ${track_res.headers['retry-after']} seconds."
+            # Save index failed at and retry time
+            record_msg = f"Stopped at index ${idx}. Try again after {track_res.headers['retry-after']} seconds."
             txt_file = open('record.txt', 'w')
             txt_file.write(record_msg)
 
-            ## Report
+            # Report
             print("ERROR GETTING TRACK")
             print(record_msg)
             print(df.head(5))
@@ -77,7 +78,6 @@ for idx, row in df.iterrows():
         if 'preview_url' not in data:
             continue
         df.loc[idx, 'preview_url'] = data['preview_url']
-        print(data['preview_url'])
 
     # Failed request
     except requests.exceptions.RequestException as e:
@@ -85,4 +85,4 @@ for idx, row in df.iterrows():
 
 # Save csv
 print(df)
-df.to_csv(f'dataset_clean_${time.time()}.csv', sep='\t', encoding='utf-8')
+df.to_csv(f'dataset_clean_{time.time()}.csv', sep='\t', encoding='utf-8')
