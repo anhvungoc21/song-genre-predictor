@@ -57,11 +57,11 @@ for idx, row in df.iterrows():
 
         if (track_res.status_code != 200):
             # Save csv upon error
-            df.to_csv(f'dataset_clean_${time.time()}.csv',
+            df.to_csv(f'dataset_clean_{time.time()}.csv',
                       sep='\t', encoding='utf-8')
 
             # Save index failed at and retry time
-            record_msg = f"Stopped at index ${idx}. Try again after {track_res.headers['retry-after']} seconds."
+            record_msg = f"Stopped at index {idx}. Try again after {track_res.headers['retry-after']} seconds."
             txt_file = open('record.txt', 'w')
             txt_file.write(record_msg)
 
