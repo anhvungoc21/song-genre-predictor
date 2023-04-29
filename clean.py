@@ -14,7 +14,7 @@ start_idx = 7008
 
 # Load data
 # Note: Change the starting file every time. This is recorded in record.txt.
-df = pd.read_csv('./dataset_clean_1682763574.029676.csv')
+df = pd.read_csv('./dataset.csv')
 # df = df.drop(columns=['Unnamed: 0']) # Ran on original csv
 
 # Authenticate
