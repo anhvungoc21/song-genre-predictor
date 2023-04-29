@@ -10,10 +10,12 @@ import time
 token_url = "https://accounts.spotify.com/api/token"
 track_url = "https://api.spotify.com/v1/tracks/"
 example_track_id = "4qPNDBW1i3p13qLCt0Ki3A"
+start_idx = 7008
 
 # Load data
-df = pd.read_csv('./dataset.csv')
-df = df.drop(columns=['Unnamed: 0'])
+# Note: Change the starting file every time. This is recorded in record.txt.
+df = pd.read_csv('./dataset_clean_1682763574.029676.csv')
+# df = df.drop(columns=['Unnamed: 0']) # Ran on original csv
 
 # Authenticate
 load_dotenv()
@@ -44,24 +46,25 @@ try:
 except requests.exceptions.RequestException as e:
     raise SystemExit(e)
 
-# Add column of empty preview_url strings
-df['preview_url'] = pd.Series(['' for _ in range(len(df))])
+# Add column of empty preview_url strings. Did this once initially!
+# df['preview_url'] = pd.Series(['' for _ in range(len(df))]) 
 
 # Get preview_url for all tracks
 track_headers = {"Authorization": f"Bearer {token}"}
 retry_in = 0
-for idx, row in df.iterrows():
+for idx, row in df.iloc[start_idx:].iterrows():
     try:
         track_res = requests.get(url=track_url+row['track_id'],
                                  headers=track_headers)
 
         if (track_res.status_code != 200):
             # Save csv upon error
-            df.to_csv(f'dataset_clean_{time.time()}.csv',
+            new_csv_name = f'dataset_clean_{time.time()}.csv'
+            df.to_csv(new_csv_name,
                       sep='\t', encoding='utf-8')
 
             # Save index failed at and retry time
-            record_msg = f"Stopped at index {idx}. Try again after {track_res.headers['retry-after']} seconds."
+            record_msg = f"Stopped at index {idx}. Saved to file {new_csv_name}. Try again after {track_res.headers['retry-after']} seconds."
             txt_file = open('record.txt', 'w')
             txt_file.write(record_msg)
 
