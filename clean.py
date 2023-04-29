@@ -61,7 +61,7 @@ for idx, row in df.iloc[start_idx:].iterrows():
             # Save csv upon error
             new_csv_name = f'dataset_clean_{time.time()}.csv'
             df.to_csv(new_csv_name,
-                      sep='\t', encoding='utf-8')
+                      sep=',', encoding='utf-8')
 
             # Save index failed at and retry time
             record_msg = f"Stopped at index {idx}. Saved to file {new_csv_name}. Try again after {track_res.headers['retry-after']} seconds."
@@ -88,4 +88,4 @@ for idx, row in df.iloc[start_idx:].iterrows():
 
 # Save csv
 print(df)
-df.to_csv(f'dataset_clean_{time.time()}.csv', sep='\t', encoding='utf-8')
+df.to_csv(f'dataset_clean_{time.time()}.csv', sep=',', encoding='utf-8')
