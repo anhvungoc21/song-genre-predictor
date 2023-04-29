@@ -45,9 +45,6 @@ try:
 except requests.exceptions.RequestException as e:
     raise SystemExit(e)
 
-# Add column of empty preview_url strings. Did this once initially!
-# df['preview_url'] = pd.Series(['' for _ in range(len(df))]) 
-
 # Get preview_url for all tracks
 track_headers = {"Authorization": f"Bearer {token}"}
 retry_in = 0
