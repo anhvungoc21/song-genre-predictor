@@ -4,6 +4,7 @@ import requests
 import json
 import os
 from dotenv import load_dotenv
+import time
 
 # Constants
 token_url = "https://accounts.spotify.com/api/token"
@@ -48,19 +49,27 @@ df['preview_url'] = pd.Series(['' for _ in range(len(df))])
 
 # Get preview_url for all tracks
 track_headers = {"Authorization": f"Bearer {token}"}
+retry_in = 0
 for idx, row in df.iterrows():
+    ## time.sleep(retry_in)
     try:
       track_res = requests.get(url=track_url+row['track_id'],
                               headers=track_headers)
+      
       if (track_res.status_code != 200):
         print("ERROR GETTING TRACK")
-        raise track_res.raise_for_status() 
+        print("Stopped at index: " + str(idx))
+        print("Try again after: " + track_res.headers['retry-after'] + " seconds")
+        print(df)
+        df.to_csv('dataset_clean', sep='\t', encoding='utf-8')
+        raise track_res.raise_for_status()
       
       data = track_res.json()
 
       # Check for existence of preview_url
       if 'preview_url' not in data: continue
-      df.loc[idx, 'preview_url'] = data['preview_url']    
+      df.loc[idx, 'preview_url'] = data['preview_url'] 
+      print(data['preview_url'])   
 
     # Failed request
     except requests.exceptions.RequestException as e:
