@@ -51,30 +51,38 @@ df['preview_url'] = pd.Series(['' for _ in range(len(df))])
 track_headers = {"Authorization": f"Bearer {token}"}
 retry_in = 0
 for idx, row in df.iterrows():
-    ## time.sleep(retry_in)
     try:
-      track_res = requests.get(url=track_url+row['track_id'],
-                              headers=track_headers)
-      
-      if (track_res.status_code != 200):
-        print("ERROR GETTING TRACK")
-        print("Stopped at index: " + str(idx))
-        print("Try again after: " + track_res.headers['retry-after'] + " seconds")
-        print(df)
-        df.to_csv('dataset_clean', sep='\t', encoding='utf-8')
-        raise track_res.raise_for_status()
-      
-      data = track_res.json()
+        track_res = requests.get(url=track_url+row['track_id'],
+                                 headers=track_headers)
 
-      # Check for existence of preview_url
-      if 'preview_url' not in data: continue
-      df.loc[idx, 'preview_url'] = data['preview_url'] 
-      print(data['preview_url'])   
+        if (track_res.status_code != 200):
+            ## Save csv upon error
+            df.to_csv(f'dataset_clean_${time.time()}.csv', sep='\t', encoding='utf-8')
+
+            ## Save index failed at and retry time
+            record_msg = f"Stopped at index ${idx}. Try again after ${track_res.headers['retry-after']} seconds."
+            txt_file = open('record.txt', 'w')
+            txt_file.write(record_msg)
+
+            ## Report
+            print("ERROR GETTING TRACK")
+            print(record_msg)
+            print(df.head(5))
+
+            raise track_res.raise_for_status()
+
+        data = track_res.json()
+
+        # Check for existence of preview_url
+        if 'preview_url' not in data:
+            continue
+        df.loc[idx, 'preview_url'] = data['preview_url']
+        print(data['preview_url'])
 
     # Failed request
     except requests.exceptions.RequestException as e:
-      raise SystemExit(e) 
+        raise SystemExit(e)
 
 # Save csv
 print(df)
-df.to_csv('dataset_clean', sep='\t', encoding='utf-8')
+df.to_csv(f'dataset_clean_${time.time()}.csv', sep='\t', encoding='utf-8')
