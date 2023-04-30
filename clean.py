@@ -9,7 +9,6 @@ import time
 # Constants
 token_url = "https://accounts.spotify.com/api/token"
 track_url = "https://api.spotify.com/v1/tracks/"
-example_track_id = "4qPNDBW1i3p13qLCt0Ki3A"
 start_idx = 7008
 
 # Load data
@@ -54,6 +53,7 @@ for idx, row in df.iloc[start_idx:].iterrows():
                                  headers=track_headers)
 
         if (track_res.status_code != 200):
+            print(track_res.content)
             # Save csv upon error
             new_csv_name = f'dataset_clean_{time.time()}.csv'
             df.to_csv(new_csv_name,
