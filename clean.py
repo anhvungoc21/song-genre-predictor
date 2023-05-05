@@ -5,11 +5,12 @@ import json
 import os
 from dotenv import load_dotenv
 import time
+from collections import defaultdict
 
 # Constants
 token_url = "https://accounts.spotify.com/api/token"
 track_url = "https://api.spotify.com/v1/tracks/"
-start_idx = 7008
+start_idx = 0
 
 # Load data
 # Note: Change the starting file every time. This is recorded in record.txt.
@@ -46,8 +47,14 @@ except requests.exceptions.RequestException as e:
 
 # Get preview_url for all tracks
 track_headers = {"Authorization": f"Bearer {token}"}
-retry_in = 0
+
+genre_count = defaultdict(int)
+GENRE_SET = set(['acoustic', 'blues', 'classical', 'country', 'dance', 'hip-hop', 'rock', 'world-music', 'indie', 'jazz', 'pop', 'edm'])
+
 for idx, row in df.iloc[start_idx:].iterrows():
+    genre = row['track_genre']
+    if genre not in GENRE_SET or genre_count[genre] == 100: continue
+
     try:
         track_res = requests.get(url=track_url+row['track_id'],
                                  headers=track_headers)
@@ -74,9 +81,12 @@ for idx, row in df.iloc[start_idx:].iterrows():
         data = track_res.json()
 
         # Check for existence of preview_url
-        if 'preview_url' not in data:
+        if 'preview_url' not in data or data['preview_url'] is None:
             continue
         df.loc[idx, 'preview_url'] = data['preview_url']
+        print(data['preview_url'])
+        print(genre, genre_count[genre])
+        genre_count[genre] += 1
 
     # Failed request
     except requests.exceptions.RequestException as e:
