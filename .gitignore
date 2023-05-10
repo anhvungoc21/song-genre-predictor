@@ -4,3 +4,7 @@
 # System
 .vscode
 .DS_Store
+
+# Too heavy - Audio files
+mp3_files
+wav_with_labels
