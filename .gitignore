@@ -9,3 +9,6 @@
 mp3_files
 wav_with_labels
 test_files
+
+# Cache
+__pycache__
