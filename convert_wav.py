@@ -5,27 +5,34 @@ import os
 from dotenv import load_dotenv
 from collections import defaultdict
 from pydub import AudioSegment
+from util_funcs import slugify
 
-df = pd.read_csv('./dataset_clean_1683243179.422074.csv', dtype={'track_genre': str})
+MP3_PATH = 'mp3_files'
+WAV_PATH = 'wav_with_labels'
+
+df = pd.read_csv('./data_100_genre.csv', dtype={'track_genre': str})
 df_purl = df[df[['preview_url']].notnull().all(1)]
 
-os.mkdir('mp3_files')
-os.mkdir('wav_with_labels')
+if not os.path.exists(MP3_PATH):
+    os.mkdir(MP3_PATH)
+if not os.path.exists(WAV_PATH):
+    os.mkdir(WAV_PATH)
 
 for idx, row in df_purl.iterrows():
     preview_url = row['preview_url']
     genre = row['track_genre']
+    track_name = row['track_name']
     track_id = row['track_id']
 
-    ### Download preview urls as mp3 files then convert them to wav files
+    # Download preview urls as mp3 files then convert them to wav files
     r = requests.get(preview_url, allow_redirects=True)
-    open('mp3_files/' + track_id + '.mp3', 'wb').write(r.content)
-                                                                     
-    src = 'mp3_files/' + track_id + '.mp3'
-    if not os.path.exists("wav_with_labels/" + genre):
-        os.mkdir("wav_with_labels/" + genre) 
-    dst = "wav_with_labels/" + genre + '/' + track_id + '.wav'
-                                 
+    name_convention = genre + '_' + slugify(track_name, True) # Filename-friendly strings
+    src = MP3_PATH + '/' + name_convention + '.mp3'
+    open(src, 'wb').write(r.content)
+
+    if not os.path.exists(WAV_PATH + "/" + genre):
+        os.mkdir(WAV_PATH + "/" + genre)
+    dst = WAV_PATH + "/" + genre + '/' + name_convention + '.wav'
+
     sound = AudioSegment.from_mp3(src)
     sound.export(dst, format="wav")
-
