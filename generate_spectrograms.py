@@ -43,13 +43,9 @@ def save_spectrogram(dataset_path):
                                            y_axis='mel', sr=sr,
                                            fmax=8000, ax=ax)
 
-            # ax.get_xaxis().set_visible(False)
-            # ax.get_yaxis().set_visible(False)
             plt.axis('off')
             plt.margins(x=0, y=0)
             plt.savefig("spectrogram/" + genre + "/" +
                         fname + ".png", bbox_inches='tight', pad_inches=0)
-            break
-
 
 save_spectrogram(DATASET_PATH)
