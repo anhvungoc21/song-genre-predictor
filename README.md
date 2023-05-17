@@ -1,5 +1,9 @@
 # song-genre-predictor
 
+## Download packages and libraries
+
+Run `pip install -r requirements.txt` or `pip3 install -r requirements.txt`
+
 ## Create .env file
 
 If you plan to create your own version of a cleaned dataset or, in other words, run **clean.py**, you will need to:
