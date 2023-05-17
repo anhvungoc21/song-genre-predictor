@@ -21,7 +21,7 @@ If you plan to create your own version of a cleaned dataset or, in other words, 
 
 #### Run the scripts in the following order:
 
-**Note:** You can skip running `mutate.py` and `clean.py` if you decided to use the provided cleaned datasets.
+**Note:** You can skip running `mutate.py` and `clean.py` if you decide to use the provided cleaned datasets.
 
 **mutate.py** - Run this file to add a `preview_url` column to our original dataset. This will give us a place to store the preview urls later.
 
