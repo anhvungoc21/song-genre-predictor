@@ -20,8 +20,8 @@ df = pd.read_csv('./dataset.csv')
 load_dotenv()
 payload = {
     'grant_type': 'client_credentials',
-    'client_id': os.getenv('SPOTIFY_CLIENT_ID'),
-    'client_secret': os.getenv('SPOTIFY_CLIENT_SECRET')
+    'client_id': os.getenv('SPOTIFY_CLIENT_ID_NA'),
+    'client_secret': os.getenv('SPOTIFY_CLIENT_SECRET_NA')
 }
 
 # Request access token
@@ -50,10 +50,11 @@ track_headers = {"Authorization": f"Bearer {token}"}
 
 genre_count = defaultdict(int)
 GENRE_SET = set(['acoustic', 'blues', 'classical', 'country', 'dance', 'hip-hop', 'rock', 'world-music', 'indie', 'jazz', 'pop', 'edm'])
+TRACKS_PER_GENRE = 100
 
 for idx, row in df.iloc[start_idx:].iterrows():
     genre = row['track_genre']
-    if genre not in GENRE_SET or genre_count[genre] == 100: continue
+    if genre not in GENRE_SET or genre_count[genre] == TRACKS_PER_GENRE: continue
 
     try:
         track_res = requests.get(url=track_url+row['track_id'],
@@ -93,5 +94,4 @@ for idx, row in df.iloc[start_idx:].iterrows():
         raise SystemExit(e)
 
 # Save csv
-print(df)
 df.to_csv(f'dataset_clean_{time.time()}.csv', sep=',', encoding='utf-8')
