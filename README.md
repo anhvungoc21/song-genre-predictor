@@ -45,7 +45,7 @@ If you plan to create your own version of a cleaned dataset or, in other words, 
 
 ## Model Scripts Descriptions
 
-**Note:** The following scripts can be run independently from each other. There are also detailed descriptions within these files provided as comments.
+**Note:** The following scripts can be run independently from each other. There are also detailed descriptions within these files provided as comments. If you choose to use the dataset `data_200_genre.csv`, remember to change the number of Mel spectrograms used accordingly. The default count was 1195 for the dataset `data_100_genre.csv`. The script `count.py` can help with the counting.
 
 **perform_cnn.ipynb** - Run our convolutional neural networks model on the generated Mel spectrograms. Test set evaluation and predictions are included.
 
